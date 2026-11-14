@@ -1,0 +1,101 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Click Map for Coordinates</title>
+
+  <!-- Leaflet CSS -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  />
+
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 20px;
+    }
+
+    #map {
+      height: 450px;
+      width: 100%;
+      border-radius: 8px;
+      margin-bottom: 15px;
+    }
+
+    .coords-box {
+      padding: 10px;
+      background: #f4f4f4;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h2>Click anywhere on the map</h2>
+
+  <div id="map"></div>
+
+  <div class="coords-box">
+    <label>
+      Latitude:
+      <input type="text" id="lat" readonly>
+    </label>
+
+    <label>
+      Longitude:
+      <input type="text" id="lng" readonly>
+    </label>
+  </div>
+
+  <!-- Leaflet JavaScript -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <script>
+    // Initialize map
+    const map = L.map('map').setView(
+      [38.6780, -121.1761],
+      12
+    );
+
+    // OpenStreetMap tiles
+    L.tileLayer(
+      'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+      {
+        maxZoom: 19,
+        attribution: '&copy; OpenStreetMap contributors'
+      }
+    ).addTo(map);
+
+    let marker;
+
+    // Handle map clicks
+    map.on('click', function(e) {
+
+      const lat = e.latlng.lat.toFixed(6);
+      const lng = e.latlng.lng.toFixed(6);
+
+      // Update coordinates without refreshing
+      document.getElementById('lat').value = lat;
+      document.getElementById('lng').value = lng;
+
+      // Update marker
+      if (marker) {
+        marker.setLatLng(e.latlng);
+      } else {
+        marker = L.marker(e.latlng).addTo(map);
+      }
+
+      // Display popup
+      marker.bindPopup(
+        `Lat: ${lat}<br>Lng: ${lng}`
+      ).openPopup();
+
+    });
+  </script>
+
+</body>
+</html>
